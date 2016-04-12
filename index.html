@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>Udacity FE Nanodegree - Neighborhood Map Project</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="lib/mdl/material.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Downtown SF Eats</span>
+      <div class="mdl-grid">
+        <form action="#" class="mdl-cell mdl-cell--6-col mdl-cell--1-offset">
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="search" data-bind="textInput: filter">
+            <label class="mdl-textfield__label" for="search">Search...</label>
+          </div>
+        </form>
+      </div>
+      <nav class="mdl-navigation" data-bind="foreach: filteredNav">
+        <a class="mdl-navigation__link" data-bind="text: $data, attr: { id: 'link' + $index() }"></a>
+      </nav>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <script async defer src="lib/mdl/material.min.js"></script>
+  <script src="lib/knockout-3.4.0.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw&callback=initMap"></script>
+  <script async defer src="js/app.js"></script>
+</body>
+
+</html>
