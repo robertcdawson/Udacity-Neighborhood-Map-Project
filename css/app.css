@@ -16,3 +16,7 @@ a:hover {
 .firstHeading {
   font-size: 1.5rem;
 }
+
+#images img {
+  max-height: 100px;
+}
