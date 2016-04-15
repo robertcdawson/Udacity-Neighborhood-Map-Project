@@ -1,22 +1,3 @@
-// Get Flickr photos for each location
-$( document ).ready(function() {
-  var flickrApi = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=907dea022b0dfc2ec993df236bc0fe6c&safe_search=1&per_page=5&lat=37.796184&lon=-122.393799&format=json&jsoncallback=?";
-  var src;
-  var jqxhr = $.getJSON(flickrApi)
-    .done(function(data) {
-      $.each(data.photos.photo, function(i, item) {
-        src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret +"_m.jpg";
-        $("<img/>").attr("src", src).appendTo(".images");
-      });
-    })
-    .fail(function() {
-      $(".images").html("Oops, something went wrong. Please reload this page to try again.");
-    });
-    jqxhr.complete(function() {
-      return src;
-    });
-});
-
 var ViewModel = function() {
   var self = this;
   self.filter = ko.observable('');
@@ -91,7 +72,6 @@ function initMap() {
     '<h1 class="firstHeading">Blue Bottle</h1>' +
     '<div>' +
     '<p>Lorem ipsum</p>' +
-    '<div class="images"></div>' +
     '</div>' +
     '</div>';
 
@@ -103,7 +83,6 @@ function initMap() {
     '<h1 class="firstHeading">The Plant</h1>' +
     '<div>' +
     '<p>Lorem ipsum</p>' +
-    '<div class="images"></div>' +
     '</div>' +
     '</div>';
 
@@ -115,7 +94,6 @@ function initMap() {
     '<h1 class="firstHeading">Cowgirl Creamery Cheese Shop</h1>' +
     '<div>' +
     '<p>Lorem ipsum</p>' +
-    '<div class="images"></div>' +
     '</div>' +
     '</div>';
 
@@ -127,7 +105,6 @@ function initMap() {
     '<h1 class="firstHeading">Paramo Coffee</h1>' +
     '<div>' +
     '<p>Lorem ipsum</p>' +
-    '<div class="images"></div>' +
     '</div>' +
     '</div>';
 
@@ -139,7 +116,6 @@ function initMap() {
     '<h1 class="firstHeading">Boulettes Larder</h1>' +
     '<div>' +
     '<p>Lorem ipsum</p>' +
-    '<div class="images"></div>' +
     '</div>' +
     '</div>';
 
@@ -226,16 +202,21 @@ function initMap() {
       boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
   });
 
+  // Get Flickr photos for each location
   var flickrApi = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=907dea022b0dfc2ec993df236bc0fe6c&safe_search=1&per_page=5&lat=37.796184&lon=-122.393799&format=json&jsoncallback=?";
   var src;
-  $.getJSON(flickrApi)
+  var jqxhr = $.getJSON(flickrApi)
     .done(function(data) {
       $.each(data.photos.photo, function(i, item) {
         src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret +"_m.jpg";
-        $("<img/>").attr("src", src).appendTo(".images");
+        $("<img/>").attr("src", src).appendTo("#images");
       });
     })
     .fail(function() {
-      $(".images").html("Oops, something went wrong. Please reload this page to try again.");
+      $("#images").html("Oops, something went wrong. Please reload this page to try again.");
     });
+    jqxhr.complete(function() {
+      console.log( "src", src );
+    });
+
 }
