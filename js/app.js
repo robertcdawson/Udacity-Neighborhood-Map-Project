@@ -16,7 +16,8 @@ var ViewModel = function() {
       return self.nav();
     }
     return self.nav().filter(function(i) {
-      return i.indexOf(filter) > -1;
+      // Check for proper casing or lowercase
+      return i.toLowerCase().indexOf(filter) > -1 || i.indexOf(filter) > -1;
     });
   });
 
@@ -243,4 +244,14 @@ function initMap() {
       closeAllInfoWindows();
       boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
   });
+}
+
+// If "google.maps" object loads (i.e., map script loads), load map
+function hasMap() {
+  if (typeof google.maps === 'object') {
+    initMap();
+  }
+  else {
+    console.log("Error: Map did not load.");
+  }
 }
