@@ -38,12 +38,8 @@ var ViewModel = function() {
     });
 };
 
-if (typeof ko === 'object') {
-  var vm = new ViewModel();
-  ko.applyBindings(vm);
-} else {
-  console.log("Error: Knockout.js did not load.");
-}
+var vm = new ViewModel();
+ko.applyBindings(vm);
 
 // Initialize Google map
 function initMap() {
