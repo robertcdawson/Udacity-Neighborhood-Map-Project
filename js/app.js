@@ -54,6 +54,7 @@ function initMap() {
 
   // Set defaults
   var zoomLevel = 17;
+
   var mapCenter = {
     lat: 37.796,
     lng: -122.396
@@ -78,6 +79,14 @@ function initMap() {
     lat: 37.795514,
     lng: -122.393477
   };
+
+  var places = [
+    { lat: mapCenter.lat, lng: mapCenter.lng },
+    { lat: blueBottle.lat, lng: blueBottle.lng },
+    { lat: thePlant.lat, lng: thePlant.lng },
+    { lat: cowgirlCreamery.lat, lng: cowgirlCreamery.lng },
+    { lat: paramoCoffee.lat, lng: paramoCoffee.lng }
+  ];
 
   // Create map
   var map = new google.maps.Map(mapDiv, {
@@ -120,27 +129,32 @@ function initMap() {
   var blueBottleMarker = new google.maps.Marker({
     position: blueBottle,
     map: map,
-    title: 'Blue Bottle Coffee'
+    title: 'Blue Bottle Coffee',
+    animation: google.maps.Animation.DROP
   });
   var thePlantMarker = new google.maps.Marker({
     position: thePlant,
     map: map,
-    title: 'The Plant'
+    title: 'The Plant',
+    animation: google.maps.Animation.DROP
   });
   var cowgirlCreameryMarker = new google.maps.Marker({
     position: cowgirlCreamery,
     map: map,
-    title: 'Cowgirl Creamery Cheese Shop'
+    title: 'Cowgirl Creamery Cheese Shop',
+    animation: google.maps.Animation.DROP
   });
   var paramoCoffeeMarker = new google.maps.Marker({
     position: paramoCoffee,
     map: map,
-    title: 'Paramo Coffee'
+    title: 'Paramo Coffee',
+    animation: google.maps.Animation.DROP
   });
   var boulettesLarderMarker = new google.maps.Marker({
     position: boulettesLarder,
     map: map,
-    title: 'Boulettes Larder'
+    title: 'Boulettes Larder',
+    animation: google.maps.Animation.DROP
   });
 
   var updateJson = function() {
