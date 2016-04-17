@@ -26,8 +26,14 @@
         <a class="mdl-navigation__link" data-bind="text: $data, attr: { id: 'link' + $index() }"></a>
       </nav>
     </div>
+
     <div id="map"></div>
-    <div id="images"></div>
+    <div id="images" data-bind="foreach: srcs">
+      <!-- ko foreach: photos.photo -->
+        <img data-bind="attr: { src: 'http://farm' + farm + '.static.flickr.com/' + server + '/' + id + '_' + secret + '_m.jpg', title: title }">
+      <!-- /ko -->
+    </div>
+
   </div>
 
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw&callback=initMap"></script>

@@ -1,3 +1,4 @@
+// Get Flickr photos for each location
 var ViewModel = function() {
   var self = this;
   self.filter = ko.observable('');
@@ -18,9 +19,26 @@ var ViewModel = function() {
       return i.indexOf(filter) > -1;
     });
   });
+
+  // Set default coordinates
+  self.lat = ko.observable(37.796184);
+  self.lon = ko.observable(-122.393799);
+
+  self.flickrApi = ko.observable("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + self.lat() + "&lon=" + self.lon() + "&format=json&jsoncallback=?");
+
+  self.srcs = ko.observableArray();
+
+  $.getJSON(self.flickrApi())
+    .done(function(data) {
+      self.srcs(data);
+    })
+    .fail(function() {
+      console.log("Error: Data did not load.");
+    });
 };
 
-ko.applyBindings(new ViewModel());
+var vm = new ViewModel();
+ko.applyBindings(vm);
 
 // Initialize Google map
 function initMap() {
@@ -68,56 +86,31 @@ function initMap() {
   });
 
   // Set info display text
-  var blueBottleInfo = '<div id="content">' +
-    '<h1 class="firstHeading">Blue Bottle</h1>' +
-    '<div>' +
-    '<p>Lorem ipsum</p>' +
-    '</div>' +
-    '</div>';
+  var blueBottleInfo = '<h1 class="firstHeading">Blue Bottle</h1>';
 
   var blueBottleInfoWindow = new google.maps.InfoWindow({
     content: blueBottleInfo
   });
 
-  var thePlantInfo = '<div id="content">' +
-    '<h1 class="firstHeading">The Plant</h1>' +
-    '<div>' +
-    '<p>Lorem ipsum</p>' +
-    '</div>' +
-    '</div>';
+  var thePlantInfo = '<h1 class="firstHeading">The Plant</h1>';
 
   var thePlantInfoWindow = new google.maps.InfoWindow({
     content: thePlantInfo
   });
 
-  var cowgirlCreameryInfo = '<div id="content">' +
-    '<h1 class="firstHeading">Cowgirl Creamery Cheese Shop</h1>' +
-    '<div>' +
-    '<p>Lorem ipsum</p>' +
-    '</div>' +
-    '</div>';
+  var cowgirlCreameryInfo = '<h1 class="firstHeading">Cowgirl Creamery Cheese Shop</h1>';
 
   var cowgirlCreameryInfoWindow = new google.maps.InfoWindow({
     content: cowgirlCreameryInfo
   });
 
-  var paramoCoffeeInfo = '<div id="content">' +
-    '<h1 class="firstHeading">Paramo Coffee</h1>' +
-    '<div>' +
-    '<p>Lorem ipsum</p>' +
-    '</div>' +
-    '</div>';
+  var paramoCoffeeInfo = '<h1 class="firstHeading">Paramo Coffee</h1>';
 
   var paramoCoffeeInfoWindow = new google.maps.InfoWindow({
     content: paramoCoffeeInfo
   });
 
-  var boulettesLarderInfo = '<div id="content">' +
-    '<h1 class="firstHeading">Boulettes Larder</h1>' +
-    '<div>' +
-    '<p>Lorem ipsum</p>' +
-    '</div>' +
-    '</div>';
+  var boulettesLarderInfo = '<h1 class="firstHeading">Boulettes Larder</h1>';
 
   var boulettesLarderInfoWindow = new google.maps.InfoWindow({
     content: boulettesLarderInfo
@@ -150,22 +143,15 @@ function initMap() {
     title: 'Boulettes Larder'
   });
 
-  // Add event listeners to handle info display on marker click
-  blueBottleMarker.addListener('click', function() {
-    blueBottleInfoWindow.open(map, blueBottleMarker);
-  });
-  thePlantMarker.addListener('click', function() {
-    thePlantInfoWindow.open(map, thePlantMarker);
-  });
-  cowgirlCreameryMarker.addListener('click', function() {
-    cowgirlCreameryInfoWindow.open(map, cowgirlCreameryMarker);
-  });
-  paramoCoffeeMarker.addListener('click', function() {
-    paramoCoffeeInfoWindow.open(map, paramoCoffeeMarker);
-  });
-  boulettesLarderMarker.addListener('click', function() {
-    boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
-  });
+  var updateJson = function() {
+    $.getJSON(vm.flickrApi())
+      .done(function(data) {
+        vm.srcs(data);
+      })
+      .fail(function() {
+        console.log("Error: Data did not load.");
+      });
+  };
 
   var closeAllInfoWindows = function() {
     blueBottleInfoWindow.close();
@@ -174,6 +160,48 @@ function initMap() {
     paramoCoffeeInfoWindow.close();
     boulettesLarderInfoWindow.close();
   };
+
+  // Add event listeners to handle info display on marker click
+  blueBottleMarker.addListener('click', function() {
+    closeAllInfoWindows();
+    blueBottleInfoWindow.open(map, blueBottleMarker);
+    vm.lat(blueBottle.lat);
+    vm.lon(blueBottle.lng);
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
+    updateJson();
+  });
+  thePlantMarker.addListener('click', function() {
+    closeAllInfoWindows();
+    thePlantInfoWindow.open(map, thePlantMarker);
+    vm.lat(thePlant.lat);
+    vm.lon(thePlant.lng);
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=The%20Plant%20cafe%20sf&sort=relevance&format=json&jsoncallback=?");
+    updateJson();
+  });
+  cowgirlCreameryMarker.addListener('click', function() {
+    closeAllInfoWindows();
+    cowgirlCreameryInfoWindow.open(map, cowgirlCreameryMarker);
+    vm.lat(cowgirlCreamery.lat);
+    vm.lon(cowgirlCreamery.lng);
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Cowgirl%20Creamery&sort=relevance&format=json&jsoncallback=?");
+    updateJson();
+  });
+  paramoCoffeeMarker.addListener('click', function() {
+    closeAllInfoWindows();
+    paramoCoffeeInfoWindow.open(map, paramoCoffeeMarker);
+    vm.lat(paramoCoffee.lat);
+    vm.lon(paramoCoffee.lng);
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Paramo&sort=relevance&format=json&jsoncallback=?");
+    updateJson();
+  });
+  boulettesLarderMarker.addListener('click', function() {
+    closeAllInfoWindows();
+    boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
+    vm.lat(boulettesLarder.lat);
+    vm.lon(boulettesLarder.lng);
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Boulettes%20Larder&sort=relevance&format=json&jsoncallback=?");
+    updateJson();
+  });
 
   // Listen for DOM events
   google.maps.event.addDomListener(link0, 'click', function() {
@@ -201,22 +229,4 @@ function initMap() {
       closeAllInfoWindows();
       boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
   });
-
-  // Get Flickr photos for each location
-  var flickrApi = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=907dea022b0dfc2ec993df236bc0fe6c&safe_search=1&per_page=5&lat=37.796184&lon=-122.393799&format=json&jsoncallback=?";
-  var src;
-  var jqxhr = $.getJSON(flickrApi)
-    .done(function(data) {
-      $.each(data.photos.photo, function(i, item) {
-        src = "http://farm"+ item.farm +".static.flickr.com/"+ item.server +"/"+ item.id +"_"+ item.secret +"_m.jpg";
-        $("<img/>").attr("src", src).appendTo("#images");
-      });
-    })
-    .fail(function() {
-      $("#images").html("Oops, something went wrong. Please reload this page to try again.");
-    });
-    jqxhr.complete(function() {
-      console.log( "src", src );
-    });
-
 }
