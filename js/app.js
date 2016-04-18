@@ -38,12 +38,23 @@ var ViewModel = function() {
     });
 };
 
+// If ko object exists, load Knockout.js
 if (typeof ko === 'object') {
   var vm = new ViewModel();
   ko.applyBindings(vm);
 } else {
   console.log("Error: Knockout.js did not load.");
 }
+
+// Highlight active list item
+var highlightListItem = function(obj) {
+  $(".mdl-navigation a").removeClass("mdl-navigation__link--current");
+  $(obj).addClass("mdl-navigation__link--current");
+};
+
+$(".mdl-navigation a").on("click", function() {
+  highlightListItem( this );
+});
 
 // Initialize Google map
 function initMap() {
@@ -182,6 +193,8 @@ function initMap() {
 
   // Add event listeners to handle info display on marker click
   blueBottleMarker.addListener('click', function() {
+    highlightListItem( $("#link0") );
+    map.panTo(blueBottle);
     closeAllInfoWindows();
     blueBottleInfoWindow.open(map, blueBottleMarker);
     vm.lat(blueBottle.lat);
@@ -190,6 +203,8 @@ function initMap() {
     updateJson();
   });
   thePlantMarker.addListener('click', function() {
+    highlightListItem( $("#link1") );
+    map.panTo(thePlant);
     closeAllInfoWindows();
     thePlantInfoWindow.open(map, thePlantMarker);
     vm.lat(thePlant.lat);
@@ -198,6 +213,8 @@ function initMap() {
     updateJson();
   });
   cowgirlCreameryMarker.addListener('click', function() {
+    highlightListItem( $("#link2") );
+    map.panTo(cowgirlCreamery);
     closeAllInfoWindows();
     cowgirlCreameryInfoWindow.open(map, cowgirlCreameryMarker);
     vm.lat(cowgirlCreamery.lat);
@@ -206,6 +223,8 @@ function initMap() {
     updateJson();
   });
   paramoCoffeeMarker.addListener('click', function() {
+    highlightListItem( $("#link3") );
+    map.panTo(paramoCoffee);
     closeAllInfoWindows();
     paramoCoffeeInfoWindow.open(map, paramoCoffeeMarker);
     vm.lat(paramoCoffee.lat);
@@ -214,6 +233,8 @@ function initMap() {
     updateJson();
   });
   boulettesLarderMarker.addListener('click', function() {
+    highlightListItem( $("#link4") );
+    map.panTo(boulettesLarder);
     closeAllInfoWindows();
     boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
     vm.lat(boulettesLarder.lat);
