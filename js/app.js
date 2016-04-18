@@ -191,8 +191,7 @@ function initMap() {
     boulettesLarderInfoWindow.close();
   };
 
-  // Add event listeners to handle info display on marker click
-  blueBottleMarker.addListener('click', function() {
+  var getBlueBottle = function() {
     highlightListItem( $("#link0") );
     map.panTo(blueBottle);
     closeAllInfoWindows();
@@ -201,8 +200,9 @@ function initMap() {
     vm.lon(blueBottle.lng);
     vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
     updateJson();
-  });
-  thePlantMarker.addListener('click', function() {
+  };
+
+  var getThePlant = function() {
     highlightListItem( $("#link1") );
     map.panTo(thePlant);
     closeAllInfoWindows();
@@ -211,8 +211,9 @@ function initMap() {
     vm.lon(thePlant.lng);
     vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=The%20Plant%20cafe%20sf&sort=relevance&format=json&jsoncallback=?");
     updateJson();
-  });
-  cowgirlCreameryMarker.addListener('click', function() {
+  };
+
+  var getCowgirlCreamery = function() {
     highlightListItem( $("#link2") );
     map.panTo(cowgirlCreamery);
     closeAllInfoWindows();
@@ -221,8 +222,9 @@ function initMap() {
     vm.lon(cowgirlCreamery.lng);
     vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Cowgirl%20Creamery&sort=relevance&format=json&jsoncallback=?");
     updateJson();
-  });
-  paramoCoffeeMarker.addListener('click', function() {
+  };
+
+  var getParamoCoffee = function() {
     highlightListItem( $("#link3") );
     map.panTo(paramoCoffee);
     closeAllInfoWindows();
@@ -231,8 +233,9 @@ function initMap() {
     vm.lon(paramoCoffee.lng);
     vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Paramo&sort=relevance&format=json&jsoncallback=?");
     updateJson();
-  });
-  boulettesLarderMarker.addListener('click', function() {
+  };
+
+  var getBoulettesLarder = function() {
     highlightListItem( $("#link4") );
     map.panTo(boulettesLarder);
     closeAllInfoWindows();
@@ -241,33 +244,40 @@ function initMap() {
     vm.lon(boulettesLarder.lng);
     vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Boulettes%20Larder&sort=relevance&format=json&jsoncallback=?");
     updateJson();
+  };
+
+  // Add event listeners to handle info display on marker click
+  blueBottleMarker.addListener('click', function() {
+    getBlueBottle();
+  });
+  thePlantMarker.addListener('click', function() {
+    getThePlant();
+  });
+  cowgirlCreameryMarker.addListener('click', function() {
+    getCowgirlCreamery();
+  });
+  paramoCoffeeMarker.addListener('click', function() {
+    getParamoCoffee();
+  });
+  boulettesLarderMarker.addListener('click', function() {
+    getBoulettesLarder();
   });
 
   // Listen for DOM events
   google.maps.event.addDomListener(link0, 'click', function() {
-      map.panTo(blueBottle);
-      closeAllInfoWindows();
-      blueBottleInfoWindow.open(map, blueBottleMarker);
+      getBlueBottle();
   });
   google.maps.event.addDomListener(link1, 'click', function() {
-      map.panTo(thePlant);
-      closeAllInfoWindows();
-      thePlantInfoWindow.open(map, thePlantMarker);
+      getThePlant();
   });
   google.maps.event.addDomListener(link2, 'click', function() {
-      map.panTo(cowgirlCreamery);
-      closeAllInfoWindows();
-      cowgirlCreameryInfoWindow.open(map, cowgirlCreameryMarker);
+      getCowgirlCreamery();
   });
   google.maps.event.addDomListener(link3, 'click', function() {
-      map.panTo(paramoCoffee);
-      closeAllInfoWindows();
-      paramoCoffeeInfoWindow.open(map, paramoCoffeeMarker);
+      getParamoCoffee();
   });
   google.maps.event.addDomListener(link4, 'click', function() {
-      map.panTo(boulettesLarder);
-      closeAllInfoWindows();
-      boulettesLarderInfoWindow.open(map, boulettesLarderMarker);
+      getBoulettesLarder();
   });
 }
 
