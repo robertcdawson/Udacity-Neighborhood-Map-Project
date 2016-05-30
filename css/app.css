@@ -32,5 +32,19 @@ a:hover {
   width: 100%;
   margin: 5px;
   border: solid 1px #ccc;
+}
 
+#error_msg {
+  display: none;
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: pink;
+  color: maroon;
+  z-index: 99999;
+  padding: 0.5rem;
+  text-align: center;
+  opacity: 0.8;
 }

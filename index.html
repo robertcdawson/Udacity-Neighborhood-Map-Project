@@ -11,6 +11,7 @@
 </head>
 
 <body>
+  <div id="error_msg">Error message</div>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Downtown SF Eats</span>
@@ -23,7 +24,7 @@
         </form>
       </div>
       <nav class="mdl-navigation" data-bind="foreach: filteredNav">
-        <a class="mdl-navigation__link" data-bind="text: $data, attr: { id: 'link' + $index() }"></a>
+        <a class="mdl-navigation__link" data-bind="text: $data.name, attr: { id: 'link' + $index() }, click: $parent.highlightListItem"></a>
       </nav>
     </div>
 
@@ -33,10 +34,8 @@
         <img data-bind="attr: { src: 'http://farm' + farm + '.static.flickr.com/' + server + '/' + id + '_' + secret + '_m.jpg', title: title }">
       <!-- /ko -->
     </div>
-
   </div>
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw&callback=hasMap"></script>
   <script src="lib/mdl/material.min.js"></script>
   <script src="lib/knockout-3.4.0.js"></script>
   <script src="lib/jquery-2.2.3.min.js"></script>
