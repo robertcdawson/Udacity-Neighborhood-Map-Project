@@ -12,7 +12,7 @@ var ViewModel = function() {
       lng: -122.393799
     },
     {
-      name: "The Plant",
+      name: "The Plant Cafe Organic",
       lat: 37.797913,
       lng: -122.396036
     },
