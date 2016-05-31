@@ -51,15 +51,46 @@ var ViewModel = function() {
     });
   });
   
+  var map_url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw";
+
+  // Get Google Maps script or fail gracefully with error message and page reload link
+  $.getScript(map_url)
+    .done(function() {
+      initMap();
+    })
+    .fail(function() {
+      $("#error_msg").html('Error: Map data did not load. Please <a href="' + window.location.href + '">reload</a> to try again.').show();
+    });
+  
+  // Cache .getScript AJAX request
+  $.ajaxSetup({
+    cache: true
+  });
+  
   // Highlight active list item when clicking list item or marker
   self.highlightListItem = function(obj) {
+    // console.log(this.locations[0].name);
     // Set location name depending on argument passed:
       // List item returns object
       // Marker returns string
-    var location_name = ( typeof obj === "string" ) ? obj : obj.name;
+    var location_name;
+    if (typeof obj === "string") location_name = obj;
+    else if (typeof obj === "object") location_name = obj.name;
+    
     var target = $(".mdl-navigation a:contains(" + location_name + ")");
     $(".mdl-navigation a").removeClass("mdl-navigation__link--current");
     $(target).addClass("mdl-navigation__link--current");
+  };
+  
+  // Initialize locationInfo function as an observable
+  self.panToLocation = ko.observable();
+  
+  self.location_array = ko.observableArray();
+  self.infowindow_array = ko.observableArray();
+  
+  self.clickListItem = function(obj) {
+    self.highlightListItem(obj);
+    self.panToLocation(obj);
   };
 
   // Set default coordinates
@@ -80,6 +111,7 @@ var ViewModel = function() {
     .fail(function() {
       $("#error_msg").html('Error: Flickr data did not load. Please <a href="' + window.location.href + '">reload</a> to try again.').show();
     });
+  
 };
 
 // Load Knockout.js or fail gracefully with error message and page reload link
@@ -120,10 +152,48 @@ function initMap() {
     }
   }
   
-  var setLocationInfo = function() {
-    var location_array = [];
-    var infowindow_array = [];
+  var closeAllInfoWindows = function() {
+    var i = 0;
+    for(i; i < vm.locations.length; i++) {
+      infowindow_array[i].close();
+    }
+  };
+  
+  vm.panToLocation = function(location) {
+    var name = ( location.title ) ? location.title : location.name;
+    var lat = ( location.position ) ? location.position.lat() : location.lat;
+    var lng = ( location.position ) ? location.position.lng() : location.lng;
     
+    // console.log(vm.infowindow_array[0].content);
+    
+    var current_list_item = $(".mdl-navigation__link--current").text();
+    
+    var i = 0;
+    for (i; i < vm.locations.length; i++) {
+      if ( vm.locations[i].name === name ) {
+        vm.infowindow_array[i].open(map, vm.location_array[i]);
+      }
+    }
+    
+    map.panTo({
+      lat: lat,
+      lng: lng
+    });
+    // closeAllInfoWindows();
+    // current_infowindow.open(map, location);
+    // vm.lat(vm.locations[i].lat);
+    // vm.lon(vm.locations[i].lng);
+    // vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
+    // updateJson();
+    // toggleBounce(location_array[i]);
+  };
+  
+  var clickMarker = function() {
+    vm.highlightListItem( this.title );
+    vm.panToLocation( this );
+  }
+  
+  var setLocationInfo = function() {
     // Get Flickr data or fail gracefully with error message and page reload link
     var updateJson = function() {
       $.getJSON(vm.flickrApi())
@@ -135,29 +205,9 @@ function initMap() {
         });
     };
     
-    var locationInfo = function() {
-      // console.log(this.position.lat());
-      vm.highlightListItem( this.title );
-      map.panTo({
-        lat: this.position.lat(),
-        lng: this.position.lng()
-      });
-      // closeAllInfoWindows();
-      // current_infowindow.open(map, setLocationInfo().location[0]);
-      // vm.lat(vm.locations[i].lat);
-      // vm.lon(vm.locations[i].lng);
-      // vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
-      // updateJson();
-      // toggleBounce(location_array[i]);
-    };
-    
-    // var current_infowindow, current_location;
-    // current_infowindow = infowindow_array[i];
-    // current_location = vm.locations[i];
-    
     var i = 0;
     for(i; i < vm.locations.length; i++) {
-      location_array[i] = new google.maps.Marker({
+      vm.location_array[i] = new google.maps.Marker({
         map: map,
         position: {
           lat: vm.locations[i].lat,
@@ -167,39 +217,16 @@ function initMap() {
         animation: google.maps.Animation.DROP
       });
       
-      infowindow_array[i] = new google.maps.InfoWindow({
+      vm.infowindow_array[i] = new google.maps.InfoWindow({
         content: '<h1 class="firstHeading">' + vm.locations[i].name + '</h1>'
       });
       
       // Add event listeners to handle info display on marker click
-      location_array[i].addListener('click', locationInfo);
+      vm.location_array[i].addListener('click', clickMarker);
       
     }
-    
-    var closeAllInfoWindows = function() {
-      var i = 0;
-      for(i; i < vm.locations.length; i++) {
-        infowindow_array[i].close();
-      }
-    };
   };
   
   setLocationInfo();
   
 }
-
-var map_url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw";
-
-// Get Google Maps script or fail gracefully with error message and page reload link
-$.getScript(map_url)
-  .done(function() {
-    initMap();
-  })
-  .fail(function() {
-    $("#error_msg").html('Error: Map data did not load. Please <a href="' + window.location.href + '">reload</a> to try again.').show();
-  });
-  
-// Cache .getScript AJAX request
-$.ajaxSetup({
-  cache: true
-});
