@@ -32,6 +32,7 @@
     <div id="images" data-bind="foreach: srcs">
       <!-- ko foreach: photos.photo -->
         <img data-bind="attr: { src: 'http://farm' + farm + '.static.flickr.com/' + server + '/' + id + '_' + secret + '_m.jpg', title: title }">
+        <p class="mdl-typography--caption mdl-color-text--grey-600" data-bind="text: title"></p>
       <!-- /ko -->
     </div>
   </div>
