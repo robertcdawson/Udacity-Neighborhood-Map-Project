@@ -136,11 +136,12 @@ function initMap() {
     };
     
     var locationInfo = function() {
+      // console.log(this.position.lat());
       vm.highlightListItem( this.title );
-      // map.panTo({
-      //   lat: current_location.lat,
-      //   lng: current_location.lng
-      // });
+      map.panTo({
+        lat: this.position.lat(),
+        lng: this.position.lng()
+      });
       // closeAllInfoWindows();
       // current_infowindow.open(map, setLocationInfo().location[0]);
       // vm.lat(vm.locations[i].lat);
@@ -172,9 +173,6 @@ function initMap() {
       
       // Add event listeners to handle info display on marker click
       location_array[i].addListener('click', locationInfo);
-      
-      // Listen for DOM events
-      // google.maps.event.addDomListener(document.getElementById('link' + i), 'click', locationInfo);
       
     }
     
