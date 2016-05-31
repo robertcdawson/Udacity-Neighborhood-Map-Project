@@ -51,9 +51,13 @@ var ViewModel = function() {
     });
   });
   
-  // Highlight active list item when clicking item
+  // Highlight active list item when clicking list item or marker
   self.highlightListItem = function(obj) {
-    var target = $(".mdl-navigation a:contains(" + obj.name+ ")");
+    // Set location name depending on argument passed:
+      // List item returns object
+      // Marker returns string
+    var location_name = ( typeof obj === "string" ) ? obj : obj.name;
+    var target = $(".mdl-navigation a:contains(" + location_name + ")");
     $(".mdl-navigation a").removeClass("mdl-navigation__link--current");
     $(target).addClass("mdl-navigation__link--current");
   };
@@ -116,12 +120,6 @@ function initMap() {
     }
   }
   
-  // Highlight active list item when clicking marker
-  // var highlightListItem = function(obj) {
-  //   $(".mdl-navigation a").removeClass("mdl-navigation__link--current");
-  //   $(obj).addClass("mdl-navigation__link--current");
-  // };
-  
   var setLocationInfo = function() {
     var location_array = [];
     var infowindow_array = [];
@@ -137,7 +135,24 @@ function initMap() {
         });
     };
     
-    var locationInfo;
+    var locationInfo = function() {
+      vm.highlightListItem( this.title );
+      // map.panTo({
+      //   lat: current_location.lat,
+      //   lng: current_location.lng
+      // });
+      // closeAllInfoWindows();
+      // current_infowindow.open(map, setLocationInfo().location[0]);
+      // vm.lat(vm.locations[i].lat);
+      // vm.lon(vm.locations[i].lng);
+      // vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
+      // updateJson();
+      // toggleBounce(location_array[i]);
+    };
+    
+    // var current_infowindow, current_location;
+    // current_infowindow = infowindow_array[i];
+    // current_location = vm.locations[i];
     
     var i = 0;
     for(i; i < vm.locations.length; i++) {
@@ -155,27 +170,12 @@ function initMap() {
         content: '<h1 class="firstHeading">' + vm.locations[i].name + '</h1>'
       });
       
-      locationInfo = function() {
-        // vm.highlightListItem( $("#link" + i) );
-        console.log(this);
-        map.panTo({
-          lat: vm.locations[i].lat,
-          lng: vm.locations[i].lng
-        });
-        // closeAllInfoWindows();
-        // infowindow_array[i].open(map, setLocationInfo().location[0]);
-        // vm.lat(vm.locations[i].lat);
-        // vm.lon(vm.locations[i].lng);
-        // vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
-        // updateJson();
-        // toggleBounce(location_array[i]);
-      };
-      
       // Add event listeners to handle info display on marker click
       location_array[i].addListener('click', locationInfo);
       
       // Listen for DOM events
       // google.maps.event.addDomListener(document.getElementById('link' + i), 'click', locationInfo);
+      
     }
     
     var closeAllInfoWindows = function() {
