@@ -102,6 +102,8 @@ var ViewModel = function() {
 
   // Create empty observable array
   self.srcs = ko.observableArray();
+  
+  self.updateJson = ko.observable();
 
   // Load Flickr data or fail gracefully with error message and page reload link
   $.getJSON(self.flickrApi())
@@ -155,7 +157,7 @@ function initMap() {
   var closeAllInfoWindows = function() {
     var i = 0;
     for(i; i < vm.locations.length; i++) {
-      infowindow_array[i].close();
+      vm.infowindow_array[i].close();
     }
   };
   
@@ -164,28 +166,28 @@ function initMap() {
     var lat = ( location.position ) ? location.position.lat() : location.lat;
     var lng = ( location.position ) ? location.position.lng() : location.lng;
     
-    // console.log(vm.infowindow_array[0].content);
-    
-    var current_list_item = $(".mdl-navigation__link--current").text();
-    
-    var i = 0;
-    for (i; i < vm.locations.length; i++) {
-      if ( vm.locations[i].name === name ) {
-        vm.infowindow_array[i].open(map, vm.location_array[i]);
-      }
-    }
-    
     map.panTo({
       lat: lat,
       lng: lng
     });
-    // closeAllInfoWindows();
-    // current_infowindow.open(map, location);
-    // vm.lat(vm.locations[i].lat);
-    // vm.lon(vm.locations[i].lng);
-    // vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
-    // updateJson();
-    // toggleBounce(location_array[i]);
+    
+    closeAllInfoWindows();
+    
+    // 1. Open infowindow when clicking marker
+    // 2. Set latitude and longitude for Flickr API call
+    // 3. Animate marker on click
+    var i = 0;
+    for (i; i < vm.locations.length; i++) {
+      if ( vm.locations[i].name === name ) {
+        vm.infowindow_array[i].open(map, vm.location_array[i]);
+        vm.lat(vm.locations[i].lat);
+        vm.lon(vm.locations[i].lng);
+        toggleBounce(vm.location_array[i]);
+      }
+    }
+    
+    vm.flickrApi("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=594fb249392c0301ff092bb17a325a16&safe_search=1&per_page=10&lat=" + vm.lat() + "&lon=" + vm.lon() + "&text=Blue%20Bottle&sort=relevance&format=json&jsoncallback=?");
+    vm.updateJson();
   };
   
   var clickMarker = function() {
@@ -195,7 +197,7 @@ function initMap() {
   
   var setLocationInfo = function() {
     // Get Flickr data or fail gracefully with error message and page reload link
-    var updateJson = function() {
+    vm.updateJson = function() {
       $.getJSON(vm.flickrApi())
         .done(function(data) {
           vm.srcs(data);
