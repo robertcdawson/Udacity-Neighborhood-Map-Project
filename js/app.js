@@ -51,22 +51,6 @@ var ViewModel = function() {
     });
   });
   
-  var map_url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw";
-
-  // Get Google Maps script or fail gracefully with error message and page reload link
-  $.getScript(map_url)
-    .done(function() {
-      initMap();
-    })
-    .fail(function() {
-      $("#error_msg").html('Error: Map data did not load. Please <a href="' + window.location.href + '">reload</a> to try again.').show();
-    });
-  
-  // Cache .getScript AJAX request
-  $.ajaxSetup({
-    cache: true
-  });
-  
   // Highlight active list item when clicking list item or marker
   self.highlightListItem = function(obj) {
     // console.log(this.locations[0].name);
@@ -233,3 +217,20 @@ function initMap() {
   setLocationInfo();
   
 }
+
+// Get Google Maps script or fail gracefully with error message and page reload link
+
+var map_url = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDCDm6-E4pK_fRcLMpRYEMnnaPKXYjl7aw";
+
+$.getScript(map_url)
+  .done(function() {
+    initMap();
+  })
+  .fail(function() {
+    $("#error_msg").html('Error: Map data did not load. Please <a href="' + window.location.href + '">reload</a> to try again.').show();
+  });
+
+// Cache .getScript AJAX request
+$.ajaxSetup({
+  cache: true
+});
